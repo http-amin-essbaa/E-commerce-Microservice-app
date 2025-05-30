@@ -47,7 +47,7 @@ services:
       - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://host.docker.internal:8761/eureka
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-service:3306/app_db
       - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD:=rootA
+      - SPRING_DATASOURCE_PASSWORD:=root
     ports:
       - "8080:8080"
     depends_on:

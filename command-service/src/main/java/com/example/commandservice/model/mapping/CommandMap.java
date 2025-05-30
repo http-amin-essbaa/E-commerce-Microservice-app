@@ -7,7 +7,9 @@ import com.example.commandservice.model.entity.ProductItem;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -16,14 +18,12 @@ public class CommandMap {
     private final ProductItemMap productItemMap;
 
     public CommandDto toCommandDto(Command command) {
-        // Convertir la liste des ProductItem en ProductItemDto
-        List<ProductItemDto> productItemDtos = null;
-
-            productItemDtos = command.getProductItem().stream()
-                    .map(productItemMap::toProductItemDto) // Utiliser la méthode toProductItemDto pour la conversion
-                    .collect(Collectors.toList());
-
-
+        // Convertir la liste des ProductItem en ProductItemDto avec protection null
+        List<ProductItemDto> productItemDtos = Optional.ofNullable(command.getProductItem())
+                .orElse(Collections.emptyList())
+                .stream()
+                .map(productItemMap::toProductItemDto)
+                .collect(Collectors.toList());
 
         // Construire et retourner le CommandDto
         return CommandDto.builder()
@@ -34,18 +34,17 @@ public class CommandMap {
                 .customer_id(command.getCustomerId())
                 .customer(command.getCustomerDto())
                 .total_price(command.getTotal_price())
-                .productItem(productItemDtos) // Ajouter la liste des ProductItemDto
+                .productItem(productItemDtos)
                 .build();
     }
 
     public Command toCommand(CommandDto commandDto) {
-        // Convertir la liste des ProductItemDto en ProductItem
-        List<ProductItem> productItems = null;
-
-            productItems = commandDto.getProductItem().stream()
-                    .map(productItemMap::toProductItem) // Utiliser la méthode toProductItem pour la conversion
-                    .collect(Collectors.toList());
-
+        // Convertir la liste des ProductItemDto en ProductItem avec protection null
+        List<ProductItem> productItems = Optional.ofNullable(commandDto.getProductItem())
+                .orElse(Collections.emptyList())
+                .stream()
+                .map(productItemMap::toProductItem)
+                .collect(Collectors.toList());
 
         // Construire et retourner la Command
         return Command.builder()
@@ -56,9 +55,7 @@ public class CommandMap {
                 .customerDto(commandDto.getCustomer())
                 .customerId(commandDto.getCustomer_id())
                 .total_price(commandDto.getTotal_price())
-                .productItem(productItems) // Ajouter la liste des ProductItem
+                .productItem(productItems)
                 .build();
     }
-
-
 }
